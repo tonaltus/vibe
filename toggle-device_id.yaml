@@ -11,5 +11,5 @@ conditions: []
 action:
   - type: toggle
     device_id: 5e76870ad2bad8e59760f9294b080047  # zigbee2mqtt/Dach-Lampe-TV
-    entity_id: 07929d8bb0087b3ad58a12fdad7c26d1
+    entity_id: light.dach_lampe_tv
     domain: light
