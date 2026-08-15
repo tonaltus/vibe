@@ -1,0 +1,11 @@
+alias: "Lampe umschalten mit Hue Tap Dial (Taste 1 drücken)"
+description: "Schaltet die Lampe 'Dach-Lampe-TV' mit dem Hue Tap Dial Switch 'Dach-tap-dial' (Taste 1 drücken)."
+mode: single
+trigger:
+  - platform: mqtt
+    topic: "zigbee2mqtt/Dach-tap-dial/action"
+    payload: "{\"action\":\"1_press\"}"
+action:
+  - service: light.toggle
+    target:
+      entity_id: light.dach_lampe_tv
