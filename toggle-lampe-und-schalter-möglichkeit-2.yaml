@@ -1,0 +1,9 @@
+alias: "Lampe umschalten und Schalter referenzieren"
+description: "Schaltet die Lampe 'Dach-Lampe-TV' um und referenziert den Schalter."
+sequence:
+  - service: light.toggle
+    target:
+      entity_id: light.dach_lampe_tv
+  - service: homeassistant.update_entity
+    target:
+      entity_id: sensor.dach_tap_dial_action
