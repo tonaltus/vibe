@@ -1,0 +1,5 @@
+sensor:
+  - platform: mqtt
+    name: "Dach Tap Dial Action"
+    state_topic: "zigbee2mqtt/Dach-tap-dial/action"
+    value_template: "{{ value_json.action }}"
