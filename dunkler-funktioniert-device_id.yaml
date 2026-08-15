@@ -1,0 +1,40 @@
+alias: "Helligkeit verringern mit Hue Tap Dial (Taste 1 + Drehen links)"
+description: "Steuert die Lampe 'Dach-Lampe-TV' mit dem Hue Tap Dial Switch 'Dach-tap-dial' (Taste 1 + Drehen links)."
+mode: single
+trigger:
+  - domain: mqtt
+    device_id: afbc0fec6dfd2c36ba252295054f7188
+    type: action
+    subtype: 1_rotate_left
+    trigger: device
+conditions:
+  - condition: device
+    device_id: afbc0fec6dfd2c36ba252295054f7188
+    domain: sensor
+    type: is_hold
+    subtype: "1"
+action:
+  - type: turn_on
+    device_id: 5e76870ad2bad8e59760f9294b080047
+    entity_id: light.dach_lampe_tv
+    domain: light
+    data:
+      brightness_step: -25
+      transition: 0.1
+  - delay: "0.1"
+  - repeat:
+      while:
+        - condition: device
+          device_id: afbc0fec6dfd2c36ba252295054f7188
+          domain: sensor
+          type: is_hold
+          subtype: "1_rotate_left"
+      sequence:
+        - type: turn_on
+          device_id: 5e76870ad2bad8e59760f9294b080047
+          entity_id: light.dach_lampe_tv
+          domain: light
+          data:
+            brightness_step: -25
+            transition: 0.1
+        - delay: "0.1"
