@@ -1,5 +1,6 @@
 alias: "Lampe umschalten und Schalter referenzieren"
 description: "Schaltet die Lampe 'Dach-Lampe-TV' um und referenziert den Schalter."
+mode: single
 sequence:
   - service: light.toggle
     target:
