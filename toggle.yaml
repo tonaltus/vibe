@@ -1,0 +1,12 @@
+alias: "Lampe umschalten mit Hue Tap Dial (Taste 1 drücken)"
+description: ""
+mode: single
+trigger:
+  - platform: state
+    entity_id: sensor.dach_tap_dial_action
+    to: "1_press"
+condition: []
+action:
+  - service: light.toggle
+    target:
+      entity_id: light.dach_lampe_tv
