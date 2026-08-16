@@ -1,0 +1,35 @@
+# TEST-SCRIPT: Nur Toggle-Funktion für Fehlersuche
+# Ziel: Prüfen, ob die Event-Integration und die Entity-ID korrekt sind.
+#
+# ANLEITUNG:
+# 1. Dieses Script in Home Assistant einfügen (YAML-Modus)
+# 2. Speichern und Taste 1 drücken
+# 3. Falls es funktioniert: Problem liegt im Dimm-Teil des Haupt-Scripts
+# 4. Falls es NICHT funktioniert: Problem bei Event-Integration oder Entity-ID
+#
+# WICHTIG:
+# - Prüfe, ob die Zigbee2MQTT-Integration in Home Assistant aktiv ist
+# - Prüfe, ob der Schalter in Zigbee2MQTT als "Dach-tap-dial" erkannt wird
+# - Prüfe, ob die Lampe die Entity-ID "light.dach_lampe_tv" hat
+
+alias: "TEST - Dach-tap-dial - Toggle (Fehlersuche)"
+description: "Minimales Test-Script: Nur Toggle für Taste 1 zur Fehlersuche"
+
+trigger:
+  # --- Taste 1 gedrückt ---
+  - platform: event
+    event_type: zigbee2mqtt_event
+    event_data:
+      device:
+        friendly_name: Dach-tap-dial
+      action: button_1_press
+
+condition: []
+
+action:
+  # Einfache Toggle-Aktion ohne Bedingungen
+  - service: light.toggle
+    target:
+      entity_id: light.dach_lampe_tv
+
+mode: single
