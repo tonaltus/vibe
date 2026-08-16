@@ -1,0 +1,18 @@
+alias: "Toggle Dach-Lampe-TV mit Dach-tap-dial (Gerätezuordnung)"
+description: >
+  Toggle für Dach-Lampe-TV mit Geräte-Trigger.
+  Wird automatisch dem Schalter (Dach-tap-dial) und der Lampe zugeordnet.
+
+trigger:
+  - platform: device
+    device_id: afbc0fec6dfd2c36ba252295054f7188  # Schalter-Gerät
+    domain: mqtt
+    type: action
+    subtype: button_1_press  # Exakt aus den Logs
+
+action:
+  - service: light.toggle
+    target:
+      entity_id: light.dach_lampe_tv
+
+mode: single
