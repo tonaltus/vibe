@@ -1,0 +1,19 @@
+# Home Assistant Automation für Dach-Tap-Dial (Button 2 - Toggle)
+# Toggle die Lampe 'Dach-Dimmer-Garten-unten-links' mit Button 2.
+
+- alias: "Toggle Dach-Dimmer-Garten-unten-links (Dach-Tap-Dial Button 2)"
+  description: "Toggle die Lampe 'Dach-Dimmer-Garten-unten-links' mit Button 2."
+  trigger:
+    - platform: device
+      device_id: afbc0fec6dfd2c36ba252295054f7188
+      domain: mqtt
+      type: action
+      subtype: button_2_press
+
+  action:
+    - service: light.toggle
+      target:
+        entity_id: light.dach_dimmer_garten_unten_links
+      data: {}
+
+  mode: single
