@@ -1,0 +1,11 @@
+# Home Assistant Gruppendefinition für Dach-Tap-Dial
+# Enthält die Gruppe 'Schalter-Lampen (Dach-Tap-Dial)' mit allen relevanten Lampen.
+
+group:
+  schalter_lampen:
+    name: "Schalter-Lampen (Dach-Tap-Dial)"
+    icon: mdi:lightbulb-group
+    entities:
+      - light.dach_lampe_tv
+      - light.dach_dimmer_garten_unten_links
+      - light.dach_dimmer_wand
