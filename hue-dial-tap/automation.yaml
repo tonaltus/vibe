@@ -1,36 +1,62 @@
-alias: "Zigbee Handschalter - Taste 1 - Dach-Lampe-TV Steuerung"
+alias: "Zigbee2MQTT - Dach-tap-dial - Taste 1 - Dach-Lampe-TV"
 description: >
-  Steuerung der Dach-Lampe-TV mit Taste 1:
-  - Kurzer Druck: Ein/Aus (Toggle)
-  - Drehring links: Dunkler
-  - Drehring rechts: Heller
+  Steuerung der Dach-Lampe-TV mit Zigbee2MQTT:
+  - Taste 1 (press): Ein/Aus (Toggle)
+  - Drehring links (alle Varianten): Dunkler
+  - Drehring rechts (alle Varianten): Heller
+
+# WICHTIG: Prüfe, ob die Zigbee2MQTT-Integration in Home Assistant aktiv ist!
+# Gerätename: Dach-tap-dial (aus Zigbee2MQTT)
+# Entity-ID der Lampe: light.dach_lampe_tv
+
 trigger:
   # --- Taste 1 gedrückt (Toggle) ---
   - platform: event
-    event_type: zha_event  # Für ZHA. Bei Zigbee2MQTT: "zigbee2mqtt_event" verwenden!
+    event_type: zigbee2mqtt_event
     event_data:
-      device_id: DEIN_SCHALTER_DEVICE_ID  # <-- ERSETZE MIT DEINER DEVICE ID
-      endpoint: 1                         # <-- Meist 1, falls nicht, prüfen!
-      command: "on"                       # oder "toggle", je nach Schalter
-      action: "on"                        # oder "toggle"
+      device:
+        friendly_name: Dach-tap-dial
+      action: button_1_press
 
-  # --- Drehring links (dunkler) ---
+  # --- Drehring links (alle Varianten) ---
   - platform: event
-    event_type: zha_event
+    event_type: zigbee2mqtt_event
     event_data:
-      device_id: DEIN_SCHALTER_DEVICE_ID
-      endpoint: 1
-      command: "rotate"
-      action: "rotate_left"
+      device:
+        friendly_name: Dach-tap-dial
+      action: dial_rotate_left_step
+  - platform: event
+    event_type: zigbee2mqtt_event
+    event_data:
+      device:
+        friendly_name: Dach-tap-dial
+      action: dial_rotate_left_fast
+  - platform: event
+    event_type: zigbee2mqtt_event
+    event_data:
+      device:
+        friendly_name: Dach-tap-dial
+      action: brightness_step_down
 
-  # --- Drehring rechts (heller) ---
+  # --- Drehring rechts (alle Varianten) ---
   - platform: event
-    event_type: zha_event
+    event_type: zigbee2mqtt_event
     event_data:
-      device_id: DEIN_SCHALTER_DEVICE_ID
-      endpoint: 1
-      command: "rotate"
-      action: "rotate_right"
+      device:
+        friendly_name: Dach-tap-dial
+      action: dial_rotate_right_step
+  - platform: event
+    event_type: zigbee2mqtt_event
+    event_data:
+      device:
+        friendly_name: Dach-tap-dial
+      action: dial_rotate_right_fast
+  - platform: event
+    event_type: zigbee2mqtt_event
+    event_data:
+      device:
+        friendly_name: Dach-tap-dial
+      action: brightness_step_up
 
 condition: []
 action:
@@ -38,34 +64,38 @@ action:
       # --- Toggle bei Tastendruck ---
       - conditions:
           - condition: template
-            value_template: "{{ trigger.event.data.action in ['on', 'toggle'] }}"
+            value_template: "{{ trigger.event.data.action == 'button_1_press' }}"
         sequence:
           - service: light.toggle
             target:
               entity_id: light.dach_lampe_tv
 
-      # --- Dunkler bei Links-Drehen ---
+      # --- Dunkler bei Links-Drehen (alle Varianten) ---
       - conditions:
-          - condition: template
-            value_template: "{{ trigger.event.data.action == 'rotate_left' }}"
+          - condition: or
+            conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.action in ['dial_rotate_left_step', 'dial_rotate_left_fast', 'brightness_step_down'] }}"
         sequence:
           - service: light.turn_on
             target:
               entity_id: light.dach_lampe_tv
             data:
-              brightness_step: "{{ -1 * states('input_number.dimm_schritt') | int }}"
-              transition: "{{ states('input_number.dimm_uebergangszeit') | float }}"
+              brightness_step: -10       # Fester Wert: 10 Schritte dunkler
+              transition: 0.5            # Feste Übergangszeit: 0.5 Sekunden
 
-      # --- Heller bei Rechts-Drehen ---
+      # --- Heller bei Rechts-Drehen (alle Varianten) ---
       - conditions:
-          - condition: template
-            value_template: "{{ trigger.event.data.action == 'rotate_right' }}"
+          - condition: or
+            conditions:
+              - condition: template
+                value_template: "{{ trigger.event.data.action in ['dial_rotate_right_step', 'dial_rotate_right_fast', 'brightness_step_up'] }}"
         sequence:
           - service: light.turn_on
             target:
               entity_id: light.dach_lampe_tv
             data:
-              brightness_step: "{{ states('input_number.dimm_schritt') | int }}"
-              transition: "{{ states('input_number.dimm_uebergangszeit') | float }}"
+              brightness_step: 10        # Fester Wert: 10 Schritte heller
+              transition: 0.5            # Feste Übergangszeit: 0.5 Sekunden
     default: []
 mode: restart
