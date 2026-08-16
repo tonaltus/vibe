@@ -1,0 +1,19 @@
+# Home Assistant Automation für Dach-Tap-Dial (Button 1 - Toggle)
+# Schaltet alle Lampen in der Gruppe 'Schalter-Lampen (Dach-Tap-Dial)' ein/aus.
+
+- alias: "Toggle Schalter-Lampen (Dach-Tap-Dial Button 1)"
+  description: "Toggle alle Lampen in der Gruppe 'Schalter-Lampen (Dach-Tap-Dial)' mit Button 1."
+  trigger:
+    - platform: device
+      device_id: afbc0fec6dfd2c36ba252295054f7188
+      domain: mqtt
+      type: action
+      subtype: button_1_press
+
+  action:
+    - service: light.toggle
+      target:
+        entity_id: group.schalter_lampen
+      data: {}
+
+  mode: single
