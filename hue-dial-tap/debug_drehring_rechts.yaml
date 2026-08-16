@@ -1,0 +1,18 @@
+alias: "DEBUG: Drehring rechts testen"
+trigger:
+  - platform: mqtt
+    topic: "zigbee2mqtt/Dach-tap-dial/action"
+    payload: "dial_rotate_right_step"
+
+action:
+  - service: system_log.write
+    data:
+      message: "DEBUG: Drehring rechts erkannt!"
+
+  - service: light.turn_on
+    target:
+      entity_id: light.dach_lampe_tv
+    data:
+      brightness_step: 10
+
+mode: single
