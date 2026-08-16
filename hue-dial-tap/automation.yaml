@@ -1,0 +1,71 @@
+alias: "Zigbee Handschalter - Taste 1 - Dach-Lampe-TV Steuerung"
+description: >
+  Steuerung der Dach-Lampe-TV mit Taste 1:
+  - Kurzer Druck: Ein/Aus (Toggle)
+  - Drehring links: Dunkler
+  - Drehring rechts: Heller
+trigger:
+  # --- Taste 1 gedrückt (Toggle) ---
+  - platform: event
+    event_type: zha_event  # Für ZHA. Bei Zigbee2MQTT: "zigbee2mqtt_event" verwenden!
+    event_data:
+      device_id: DEIN_SCHALTER_DEVICE_ID  # <-- ERSETZE MIT DEINER DEVICE ID
+      endpoint: 1                         # <-- Meist 1, falls nicht, prüfen!
+      command: "on"                       # oder "toggle", je nach Schalter
+      action: "on"                        # oder "toggle"
+
+  # --- Drehring links (dunkler) ---
+  - platform: event
+    event_type: zha_event
+    event_data:
+      device_id: DEIN_SCHALTER_DEVICE_ID
+      endpoint: 1
+      command: "rotate"
+      action: "rotate_left"
+
+  # --- Drehring rechts (heller) ---
+  - platform: event
+    event_type: zha_event
+    event_data:
+      device_id: DEIN_SCHALTER_DEVICE_ID
+      endpoint: 1
+      command: "rotate"
+      action: "rotate_right"
+
+condition: []
+action:
+  - choose:
+      # --- Toggle bei Tastendruck ---
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.event.data.action in ['on', 'toggle'] }}"
+        sequence:
+          - service: light.toggle
+            target:
+              entity_id: light.dach_lampe_tv
+
+      # --- Dunkler bei Links-Drehen ---
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.event.data.action == 'rotate_left' }}"
+        sequence:
+          - service: light.turn_on
+            target:
+              entity_id: light.dach_lampe_tv
+            data:
+              brightness_step: "{{ -1 * states('input_number.dimm_schritt') | int }}"
+              transition: "{{ states('input_number.dimm_uebergangszeit') | float }}"
+
+      # --- Heller bei Rechts-Drehen ---
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.event.data.action == 'rotate_right' }}"
+        sequence:
+          - service: light.turn_on
+            target:
+              entity_id: light.dach_lampe_tv
+            data:
+              brightness_step: "{{ states('input_number.dimm_schritt') | int }}"
+              transition: "{{ states('input_number.dimm_uebergangszeit') | float }}"
+    default: []
+mode: restart
