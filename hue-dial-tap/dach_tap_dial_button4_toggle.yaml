@@ -1,0 +1,19 @@
+# Home Assistant Automation für Dach-Tap-Dial (Button 4 - Toggle)
+# Toggle die Lampe 'Dach-Dimmer-Wand' mit Button 4.
+
+- alias: "Toggle Dach-Dimmer-Wand (Dach-Tap-Dial Button 4)"
+  description: "Toggle die Lampe 'Dach-Dimmer-Wand' mit Button 4."
+  trigger:
+    - platform: device
+      device_id: afbc0fec6dfd2c36ba252295054f7188
+      domain: mqtt
+      type: action
+      subtype: button_4_press
+
+  action:
+    - service: light.toggle
+      target:
+        entity_id: light.dach_dimmer_wand
+      data: {}
+
+  mode: single
