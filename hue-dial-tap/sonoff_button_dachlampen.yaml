@@ -6,17 +6,17 @@ description: >
   - Long Press: Alle Lampen aus
 
 triggers:
-  - device_id: 0x7cc6b6fffe395bc1
+  - device_id: "7940f38622ccd44c45e66e4a2c9fbd4a"
     domain: mqtt
     type: action
     subtype: button_1_press
     trigger: device
-  - device_id: 0x7cc6b6fffe395bc1
+  - device_id: "7940f38622ccd44c45e66e4a2c9fbd4a"
     domain: mqtt
     type: action
     subtype: button_1_double_press
     trigger: device
-  - device_id: 0x7cc6b6fffe395bc1
+  - device_id: "7940f38622ccd44c45e66e4a2c9fbd4a"
     domain: mqtt
     type: action
     subtype: button_1_hold
