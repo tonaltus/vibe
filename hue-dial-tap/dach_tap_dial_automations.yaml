@@ -4,87 +4,87 @@
 # ============================================
 # 1. Dimm Schalter-Lampen HELLER (Drehring rechts)
 # ============================================
-- alias: "Dimm Schalter-Lampen heller (Dach-Tap-Dial)"
-  description: "Dimmt alle angeschalteten Lampen in der Gruppe um 10 Schritte heller."
-  trigger:
-    - platform: device
-      device_id: afbc0fec6dfd2c36ba252295054f7188
-      domain: mqtt
-      type: action
-      subtype: dial_rotate_right_step
-    - platform: device
-      device_id: afbc0fec6dfd2c36ba252295054f7188
-      domain: mqtt
-      type: action
-      subtype: dial_rotate_right_fast
-    - platform: device
-      device_id: afbc0fec6dfd2c36ba252295054f7188
-      domain: mqtt
-      type: action
-      subtype: brightness_step_up
+alias: "Dimm Schalter-Lampen heller (Dach-Tap-Dial)"
+description: "Dimmt alle angeschalteten Lampen in der Gruppe um 10 Schritte heller."
+trigger:
+  - platform: device
+    device_id: afbc0fec6dfd2c36ba252295054f7188
+    domain: mqtt
+    type: action
+    subtype: dial_rotate_right_step
+  - platform: device
+    device_id: afbc0fec6dfd2c36ba252295054f7188
+    domain: mqtt
+    type: action
+    subtype: dial_rotate_right_fast
+  - platform: device
+    device_id: afbc0fec6dfd2c36ba252295054f7188
+    domain: mqtt
+    type: action
+    subtype: brightness_step_up
 
-  action:
-    - variables:
-        an_lampen: >
-          {% set ns = namespace(lampen=[]) %}
-          {% for entity_id in state_attr('group.schalter_lampen', 'entity_id') %}
-            {% if is_state(entity_id, 'on') %}
-              {% set ns.lampen = ns.lampen + [entity_id] %}
-            {% endif %}
-          {% endfor %}
-          {{ ns.lampen }}
+action:
+  - variables:
+      an_lampen: >
+        {% set ns = namespace(lampen=[]) %}
+        {% for entity_id in state_attr('group.schalter_lampen', 'entity_id') %}
+          {% if is_state(entity_id, 'on') %}
+            {% set ns.lampen = ns.lampen + [entity_id] %}
+          {% endif %}
+        {% endfor %}
+        {{ ns.lampen }}
 
-    - service: system_log.write
-      data:
-        message: "DEBUG: Gefundene Lampen = {{ an_lampen | join(',') if an_lampen else 'KEINE' }}"
+  - service: system_log.write
+    data:
+      message: "DEBUG: Gefundene Lampen = {{ an_lampen | join(',') if an_lampen else 'KEINE' }}"
 
-    - service: light.turn_on
-      target:
-        entity_id: "{{ an_lampen | join(',') if an_lampen else None }}"
-      data:
-        brightness_step: 10
-        transition: 0.3
+  - service: light.turn_on
+    target:
+      entity_id: "{{ an_lampen | join(',') if an_lampen else None }}"
+    data:
+      brightness_step: 10
+      transition: 0.3
 
-  mode: single
+mode: single
 
 # ============================================
 # 2. Dimm Schalter-Lampen DUNKLER (Drehring links)
 # ============================================
-- alias: "Dimm Schalter-Lampen dunkler (Dach-Tap-Dial)"
-  description: "Dimmt alle angeschalteten Lampen in der Gruppe um 10 Schritte dunkler."
-  trigger:
-    - platform: device
-      device_id: afbc0fec6dfd2c36ba252295054f7188
-      domain: mqtt
-      type: action
-      subtype: dial_rotate_left_step
-    - platform: device
-      device_id: afbc0fec6dfd2c36ba252295054f7188
-      domain: mqtt
-      type: action
-      subtype: dial_rotate_left_fast
-    - platform: device
-      device_id: afbc0fec6dfd2c36ba252295054f7188
-      domain: mqtt
-      type: action
-      subtype: brightness_step_down
+alias: "Dimm Schalter-Lampen dunkler (Dach-Tap-Dial)"
+description: "Dimmt alle angeschalteten Lampen in der Gruppe um 10 Schritte dunkler."
+trigger:
+  - platform: device
+    device_id: afbc0fec6dfd2c36ba252295054f7188
+    domain: mqtt
+    type: action
+    subtype: dial_rotate_left_step
+  - platform: device
+    device_id: afbc0fec6dfd2c36ba252295054f7188
+    domain: mqtt
+    type: action
+    subtype: dial_rotate_left_fast
+  - platform: device
+    device_id: afbc0fec6dfd2c36ba252295054f7188
+    domain: mqtt
+    type: action
+    subtype: brightness_step_down
 
-  action:
-    - variables:
-        an_lampen: >
-          {% set ns = namespace(lampen=[]) %}
-          {% for entity_id in state_attr('group.schalter_lampen', 'entity_id') %}
-            {% if is_state(entity_id, 'on') %}
-              {% set ns.lampen = ns.lampen + [entity_id] %}
-            {% endif %}
-          {% endfor %}
-          {{ ns.lampen }}
+action:
+  - variables:
+      an_lampen: >
+        {% set ns = namespace(lampen=[]) %}
+        {% for entity_id in state_attr('group.schalter_lampen', 'entity_id') %}
+          {% if is_state(entity_id, 'on') %}
+            {% set ns.lampen = ns.lampen + [entity_id] %}
+          {% endif %}
+        {% endfor %}
+        {{ ns.lampen }}
 
-    - service: light.turn_on
-      target:
-        entity_id: "{{ an_lampen | join(',') if an_lampen else None }}"
-      data:
-        brightness_step: -10  # Minus für dunkler!
-        transition: 0.3
+  - service: light.turn_on
+    target:
+      entity_id: "{{ an_lampen | join(',') if an_lampen else None }}"
+    data:
+      brightness_step: -10  # Minus für dunkler!
+      transition: 0.3
 
-  mode: single
+mode: single
